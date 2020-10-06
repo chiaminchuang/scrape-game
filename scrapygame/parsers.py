@@ -1,15 +1,35 @@
+from .items import ScrapygameItem
+
+def decodeEmail(code):
+    # e == /cdn-cgi/l/email-protection#85efe4e6eec5b6e1f5f7ecebf1ecebe2ecebe1f0f6f1f7fcabe6eae8
+    code = code.split('#')[-1]
+    decode = ''
+    
+    k = int(code[:2], 16)
+
+    for i in range(2, len(code)-1, 2):
+        decode += chr(int(code[i: i+2], 16)^k)
+
+    return decode
 
 
-def _3dprintingindustry_parser(response, _id):
-    author_name = response.xpath("//div[@class='author-content']//h5/text()").get()
-    elements = response.xpath("//div[@class='author-content']//a").getall()
-    contact_info = ''
-    for ele in elements:
-        if 'mailto:' in ele.attrib['href']:
-          contact_info = ele.text.split(':')[-1]
-          break
+def _3dprintingindustry_parser(response):
+    author_name = response.xpath("//div[@class='author-content']/h5/a/text()").get()
+    contact_info = response.xpath("//div[@class='author-content']/a/@href").get()
+    contact_info = decodeEmail(contact_info)
+    # contact_info = ''
+    # for ele in elements:
+        
+    #     text = ele.xpath('@href').get()
+    #     print(text)
+    #     input()
 
-    return ScrapygameItem(_id=_id, url=response.url, author_name=author_name, contact_info=contact_info)
+    #     if 'mailto:' in text:
+    #         contact_info = text.split(':')[-1]
+    #         break
+        
+    # print(_id, response.url, author_name, contact_info)
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
 
 
 

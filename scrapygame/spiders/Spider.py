@@ -1,10 +1,11 @@
 import csv
+import copy
 import pandas as pd
 import scrapy
+from urllib.parse import urlparse
 
 from scrapy.spiders import CrawlSpider
 from ..parsers import parsers
-from ..items import ScrapygameItem
 
 
 
@@ -18,22 +19,28 @@ class Spider(CrawlSpider):
         self.urls = zip(df['id'].tolist(), df['url'].to_list())
         self.urls = [d for d in self.urls if '3dprintingindustry' in d[1]]
 
+        with open('results.csv' , 'w', encoding='utf-8', newline='') as out:
+            writer = csv.writer(out)
+            writer.writerow(['id', 'url', 'author_name', 'contact_info'])
+
+
     def start_requests(self):
         for _id, url in self.urls:
-            print(url)
+            # print(_id, url)
             parser = self.get_parser(url)
             
             if parser is None:
                 continue
-            yield scrapy.Request(url, callback=lambda response : parser(response, _id))
+            yield scrapy.Request(url, callback=parser, meta={'_id': _id})
 
     def get_parser(self, url):
 
         try:
             hostname = urlparse(url).netloc
             return parsers[hostname]
-        except:
-            pass
+        except Exception as e:
+            print(e)
+            
             return None
             
     # def parse_news(self, response):

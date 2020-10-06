@@ -14,12 +14,12 @@ class ScrapygamePipeline:
 
     def __init__(self):
         self.filename = 'results.csv'
-        with open(self.filename , 'a', encoding='utf-8', newline='') as out:
-            writer = csv.writer(out)
-            writer.writerow(['id', 'url', 'author_name', 'contact_info'])
+        # with open(self.filename , 'a', encoding='utf-8', newline='') as out:
+        #     writer = csv.writer(out)
+        #     writer.writerow(['id', 'url', 'author_name', 'contact_info'])
 
     def process_item(self, item, spider):
-
+        print(item)
         with open(self.filename , 'a', encoding='utf-8', newline='') as out:
             writer = csv.writer(out)
             writer.writerow([item['_id'], item['url'], item['author_name'], item['contact_info']])
