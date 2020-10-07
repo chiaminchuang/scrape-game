@@ -17,7 +17,7 @@ class Spider(CrawlSpider):
         # load urls from file
         df = pd.read_csv('scrapy_game_input.csv', index_col=False)
         self.urls = zip(df['id'].tolist(), df['url'].to_list())
-        self.urls = [d for d in self.urls if 'accountingtoday' in d[1]]
+        self.urls = [d for d in self.urls if 'androidpolice' in d[1]]
 
         with open('results.csv' , 'w', encoding='utf-8', newline='') as out:
             writer = csv.writer(out)
@@ -31,7 +31,9 @@ class Spider(CrawlSpider):
             
             if parser is None:
                 continue
-            yield scrapy.Request(url, callback=parser, meta={'_id': _id})
+            yield scrapy.Request(url, callback=parser, meta={'_id': _id}, headers={
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36'
+            })
 
     def get_parser(self, url):
 

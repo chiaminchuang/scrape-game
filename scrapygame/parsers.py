@@ -60,15 +60,20 @@ def _accountingtoday_parser(response):
         author_name = response.xpath("//div[@class='ArticlePage-authorInfo-bio-name']/a/text()").get()
         info_url = response.xpath("//div[@class='ArticlePage-authorInfo-bio-name']/a/@href").get() 
 
-    print(response.url)
-    input()
 
-    def _info_parser(res):
-        contact_info = res.xpath("//a[@class='SocialLink']/@href").get()
-
+    contact_info = response.xpath("//a[@class='SocialLink']/@href").get()
+    if contact_info is not None and 'mailto' in contact_info:
+        contact_info = contact_info.split(' ')[-1]
         return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+    else:
+        # redirect to author personal page
+        def _info_parser(res):
+            contact_info = res.xpath("//a[@class='SocialLink']/@href").get()
+            contact_info = contact_info.split(' ')[-1] if 'mailto' in contact_info else contact_info
 
-    yield scrapy.Request(info_url, callback=_info_parser)
+            return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+        return scrapy.Request(info_url, callback=_info_parser)
 
     
 
@@ -77,6 +82,117 @@ def _3dprintingindustry_parser(response):
     contact_info = response.xpath("//div[@class='author-content']/a/@href").get()
     contact_info = decodeEmail(contact_info)
     return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+def _ambcrypto_parser(resopnse):
+    pass
+
+def _abccolumbia_parser(response):
+    
+    author_name = response.xpath("//div[@class='entry-meta entry-author multiple-bylines']/a/text()").get()
+    contact_info = response.xpath("//div[@class='entry-meta entry-author multiple-bylines']/a/@href").get()
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+
+def _altonivel_parser(response):
+    author_name = response.xpath("//div[@class='writter']/a/text()").get()
+    contact_info = response.xpath("//div[@class='writter']/a/@href").get()
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+
+def _ainonline_parser(response):
+    
+    author_name = response.xpath("//div[@class='byline']/a/text()").get()
+    contact_info = response.xpath("//div[@class='byline']/a/@href").get()
+    contact_info = 'https://www.ainonline.com' + contact_info
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+
+def _americanbanker_parser(response):
+    # need to subscribe
+    pass
+
+    # author_name = response.xpath("//span[@class='ArticlePage-authorName']/a/text()").get()
+    # contact_info = response.xpath("//span[@class='ArticlePage-authorName']/a/@href").get()
+    # return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+def _androidworld_parser(response):
+
+    author_name = response.xpath("//span[@class='autcont']/a/text()").get()
+    contact_info = response.xpath("//a[@class='authsocial icon-instagram']/@href").get()
+
+    if contact_info is None:
+        contact_info = response.xpath("//span[@class='autcont']/a/@href").get()
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+##
+def _3dnatives_parser(response):
+    
+    author_name = response.xpath("//div[@class='published-by']/strong/a/text()").get()
+    contact_info = response.xpath("//div[@class='published-by']/strong/a/@href").get()
+
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+
+def _alextimes_parser(response):
+    
+    author_name = response.xpath("//div[@class='td-post-author-name']/a/text()").get()
+    contact_info = response.xpath("//div[@class='td-post-author-name']/a/@href").get()
+
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+def _aerotelegraph_parser(response):
+    
+
+    author_name = response.xpath("//p[@class='post-meta clearfix']/a/text()").get().strip()
+    info_url = response.xpath("//p[@class='post-meta clearfix']/a/@href").get()
+    info_url = 'https://www.aerotelegraph.com' + info_url
+
+    def _info_parser(res):
+        # twitter
+        contact_info = res.xpath("//a[@class='twitter_share']/@href").get()
+        if contact_info is None:
+            # email
+            contact_info = res.xpath("//a[@class='email_share']/@href").get().split(':')[-1]
+
+        return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+    return scrapy.Request(info_url, callback=_info_parser, dont_filter=True)
+    
+def _annistonstar_parser(response):
+
+    author_name = response.xpath("//span[@class='tnt-byline asset-byline']/a[1]/text()").get()
+    contact_info = response.xpath("//span[@class='tnt-byline asset-byline']/a[2]/@href").get()
+
+    if author_name is None:
+        author_name = response.xpath("//span[@class='tnt-byline']/text()").get()[3:]
+    else:
+        author_name = author_name.split(',')[0][3:]
+
+    if contact_info is None:
+        contact_info = response.xpath("//span[@class='tnt-byline asset-byline']/a[1]/@href").get()
+        if contact_info is None:
+            # no conact_info
+            contact_info = ''
+    else:
+        contact_info = contact_info.split(':')[-1]
+
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+def _anandtech_parser(response):
+    
+
+    author_name = response.xpath("//div[@class='blog_top_left']/span/a[2]/text()").get()
+    contact_info = response.xpath("//div[@class='blog_top_left']/span/a[2]/@href").get()
+    contact_info = 'https://www.anandtech.com' + contact_info
+
+
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+def _androidpolice_parser(response):
+    author_name = response.xpath("//a[@class='author-name']/text()").get()
+    contact_info = response.xpath("//a[@class='author-name']/@href").get()
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
 
 
 
@@ -89,18 +205,18 @@ parsers = {
   'www.3dprintingmedia.network': _3dprintingmedia_parser, 
   'www.accountingtoday.com': _accountingtoday_parser, 
   '3dprintingindustry.com': _3dprintingindustry_parser, 
-  'ambcrypto.com': 5, 
-  'www.abccolumbia.com': 2, 
-  'www.altonivel.com.mx': 3, 
-  'www.ainonline.com': 6, 
-  'www.americanbanker.com': 2, 
-  'www.androidworld.it': 10, 
-  'www.3dnatives.com': 11, 
-  'alextimes.com': 6, 
-  'www.aerotelegraph.com': 6, 
-  'www.annistonstar.com': 7, 
-  'www.anandtech.com': 8, 
-  'www.androidpolice.com': 6, 
+  'ambcrypto.com': _ambcrypto_parser, 
+  'www.abccolumbia.com': _abccolumbia_parser, 
+  'www.altonivel.com.mx': _altonivel_parser, 
+  'www.ainonline.com': _ainonline_parser, 
+  'www.americanbanker.com': _americanbanker_parser, 
+  'www.androidworld.it': _androidworld_parser, 
+  'www.3dnatives.com': _3dnatives_parser, 
+  'alextimes.com': _alextimes_parser, 
+  'www.aerotelegraph.com': _aerotelegraph_parser, 
+  'www.annistonstar.com': _annistonstar_parser, 
+  'www.anandtech.com': _anandtech_parser, 
+  'www.androidpolice.com': _androidpolice_parser, 
   'arstechnica.com': 6, 
   'www.androidcentral.com': 7, 
   '247wallst.com': 10, 
