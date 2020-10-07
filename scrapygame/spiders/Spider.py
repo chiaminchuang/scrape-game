@@ -17,7 +17,7 @@ class Spider(CrawlSpider):
         # load urls from file
         df = pd.read_csv('scrapy_game_input.csv', index_col=False)
         self.urls = zip(df['id'].tolist(), df['url'].to_list())
-        self.urls = [d for d in self.urls if '3dprintingindustry' in d[1]]
+        self.urls = [d for d in self.urls if 'accountingtoday' in d[1]]
 
         with open('results.csv' , 'w', encoding='utf-8', newline='') as out:
             writer = csv.writer(out)
