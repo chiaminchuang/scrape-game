@@ -185,7 +185,6 @@ def _anandtech_parser(response):
     contact_info = response.xpath("//div[@class='blog_top_left']/span/a[2]/@href").get()
     contact_info = 'https://www.anandtech.com' + contact_info
 
-
     return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
 
 def _androidpolice_parser(response):
@@ -193,7 +192,130 @@ def _androidpolice_parser(response):
     contact_info = response.xpath("//a[@class='author-name']/@href").get()
     return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
 
+def _arstechnica_parser(response):
+    
+    author_name = response.xpath("//a[@class='author-name']/text()").get()
+    
+    # twitter
+    contact_info = response.xpath("//section[@class='author-social']/a[2]/@href").get()
+    if contact_info is None:
+        # email
+        contact_info = response.xpath("//section[@class='author-social']/a[1]/text()").get()
 
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+def _androidcentral_parser(response):
+    
+
+    author_name = response.xpath("//span[@class='article-header__author']/a/text()").get()
+    contact_info = response.xpath("//span[@class='article-header__author']/a/@href").get()
+    contact_info = 'https://www.androidcentral.com' + contact_info
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+
+def _247wallst_parser(response):
+    
+    author_name = response.xpath("//div[@class='author is-size-9 is-italic has-text-grey-darker has-text-weight-medium']/span/a/text()").get()
+    contact_info = response.xpath("//div[@class='author is-size-9 is-italic has-text-grey-darker has-text-weight-medium']/span/a/@href").get()
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+def _abqjournal_parser(response):
+    # need to subscribe
+    pass
+
+##
+def _aikenstandard_parser(response):
+
+    text = response.xpath("//header[@class='asset-header']//span[@class='tnt-byline']/text()").get()
+
+    if text is None:
+        author_name = ''
+        contact_info = ''
+    else:
+        text = text.replace('\n', ' ').split(' ')
+        author_name = ' '.join(text[1:-1])
+        contact_info = text[-1]
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+
+# 403 error
+def _agprofessional_parser(response):
+    
+    author_name = response.xpath("//a[@class='author-link']/text()").get()
+    info_url = response.xpath("//a[@class='author-link']/href").get()
+    info_url = 'https://www.agprofessional.com' + info_url
+
+    def _info_parser(res):
+        # twitter
+        contact_info = res.xpath("//span[@class='contact-link email']/@href").get().split(':')[-1]
+        if contact_info is None:
+            # email
+            contact_info = ''
+
+        return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+    return scrapy.Request(info_url, callback=_info_parser, dont_filter=True)
+
+def _303magazine_parser(response):
+
+    author_name = response.xpath("//span[@class='cb-author']/a/text()").get()
+    contact_info = response.xpath("//span[@class='cb-author']/a/@href").get()
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+def _almasdarnews_parser(response):
+    
+    author_name = response.xpath("//div[@class='td-post-author-name']/a/text()").get()
+    contact_info = response.xpath("//div[@class='td-post-author-name']/a/@href").get()
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+def _americanthinker_parser(response):
+    author_name = response.xpath("//div[@class='author']/a/text()").get()
+    contact_info = response.xpath("//div[@class='author']/a/@href").get()
+    contact_info = 'https://www.americanthinker.com' + contact_info
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+def _americanninjawarriornation_parser(response):
+
+    author_name = response.xpath("//span[@class='c-byline__author-name']/text()").get()
+    contact_info = response.xpath("//a[@class='c-byline__twitter-handle']/@href").get()
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+def _americanmilitarynews_parser(response):
+    
+    author_name = response.xpath("//a[@class='author url fn']/text()").get()
+    contact_info = response.xpath("//a[@class='author url fn']/@href").get()
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+# redirect 301, no contact_info
+def _africabusinesschief_parser(response):
+    
+    author_name = response.xpath("//div[@class='flex__SQ2u alignCenter__1AJm location__3QZp']//strong/text()").get()
+    contact_info = ''
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+def _9and10news_parser(response):
+    
+    author_name = response.xpath("//div[@class='entry-meta entry-author multiple-bylines']/a/text()").get()
+    contact_info = response.xpath("//div[@class='entry-meta entry-author multiple-bylines']/a/@href").get()
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+def _archpaper_parser(response):
+    
+    author_name = response.xpath("//a[@class='article--author']/text()").get()
+    contact_info = response.xpath("//a[@class='article--author']/@href").get()
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+def _abovethelaw_parser(response):
+    
+    author_name = response.xpath("//p[@class='postAuthor byline']/a[@class='url fn']/text()").get()
+    contact_info = response.xpath("//p[@class='postAuthor byline']/a[@class='url fn']/@href").get()
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+
+def _architectsjournal_parser(response):
+
+    author_name = response.xpath("//span[@class='post_author']//a[@class='author url fn']/text()").get()
+    contact_info = response.xpath("//span[@class='post_author']//a[@class='author url fn']/@href").get()
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
 
 
 parsers = {
@@ -209,7 +331,7 @@ parsers = {
   'www.abccolumbia.com': _abccolumbia_parser, 
   'www.altonivel.com.mx': _altonivel_parser, 
   'www.ainonline.com': _ainonline_parser, 
-  'www.americanbanker.com': _americanbanker_parser, 
+  'www.americanbanker.com': None, 
   'www.androidworld.it': _androidworld_parser, 
   'www.3dnatives.com': _3dnatives_parser, 
   'alextimes.com': _alextimes_parser, 
@@ -217,22 +339,22 @@ parsers = {
   'www.annistonstar.com': _annistonstar_parser, 
   'www.anandtech.com': _anandtech_parser, 
   'www.androidpolice.com': _androidpolice_parser, 
-  'arstechnica.com': 6, 
-  'www.androidcentral.com': 7, 
-  '247wallst.com': 10, 
-  'www.abqjournal.com': 4, 
-  'www.aikenstandard.com': 5, 
-  'www.agprofessional.com': 4, 
-  '303magazine.com': 10, 
-  'www.almasdarnews.com': 10, 
-  'www.americanthinker.com': 1, 
-  'www.americanninjawarriornation.com': 4, 
-  'americanmilitarynews.com': 3, 
-  'africa.businesschief.com': 1, 
-  'www.9and10news.com': 2, 
-  'archpaper.com': 3, 
-  'abovethelaw.com': 1, 
-  'www.architectsjournal.co.uk': 1
+  'arstechnica.com': _arstechnica_parser, 
+  'www.androidcentral.com': _androidcentral_parser, 
+  '247wallst.com': _247wallst_parser, 
+  'www.abqjournal.com': None, 
+  'www.aikenstandard.com': _aikenstandard_parser, 
+  'www.agprofessional.com': _agprofessional_parser, 
+  '303magazine.com': _303magazine_parser, 
+  'www.almasdarnews.com': _almasdarnews_parser, 
+  'www.americanthinker.com': _americanthinker_parser, 
+  'www.americanninjawarriornation.com': _americanninjawarriornation_parser, 
+  'americanmilitarynews.com': _americanmilitarynews_parser, 
+  'africa.businesschief.com': _africabusinesschief_parser, 
+  'www.9and10news.com': _9and10news_parser, 
+  'archpaper.com': _archpaper_parser, 
+  'abovethelaw.com': _abovethelaw_parser, 
+  'www.architectsjournal.co.uk': _architectsjournal_parser
 } 
 
 # {
