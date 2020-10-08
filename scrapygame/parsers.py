@@ -76,15 +76,19 @@ def _accountingtoday_parser(response):
         return scrapy.Request(info_url, callback=_info_parser)
 
     
-
 def _3dprintingindustry_parser(response):
     author_name = response.xpath("//div[@class='author-content']/h5/a/text()").get()
     contact_info = response.xpath("//div[@class='author-content']/a/@href").get()
     contact_info = decodeEmail(contact_info)
+    
     return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
 
-def _ambcrypto_parser(resopnse):
-    pass
+# -5
+# redirect to the new home page
+def _ambcrypto_parser(response):
+    author_name = ''
+    contact_info = ''
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
 
 def _abccolumbia_parser(response):
     
@@ -106,14 +110,13 @@ def _ainonline_parser(response):
     contact_info = 'https://www.ainonline.com' + contact_info
     return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
 
-
+# problem: need to login and subscribe 
+# solution: download the whole page (html)
 def _americanbanker_parser(response):
-    # need to subscribe
-    pass
 
-    # author_name = response.xpath("//span[@class='ArticlePage-authorName']/a/text()").get()
-    # contact_info = response.xpath("//span[@class='ArticlePage-authorName']/a/@href").get()
-    # return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
+    author_name = response.xpath("//span[@class='ArticlePage-authorName']//a/text()").get()
+    contact_info = response.xpath("//span[@class='ArticlePage-authorName']//a/@href").get()
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
 
 def _androidworld_parser(response):
 
@@ -124,14 +127,12 @@ def _androidworld_parser(response):
         contact_info = response.xpath("//span[@class='autcont']/a/@href").get()
     return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
 
-##
 def _3dnatives_parser(response):
     
     author_name = response.xpath("//div[@class='published-by']/strong/a/text()").get()
     contact_info = response.xpath("//div[@class='published-by']/strong/a/@href").get()
 
     return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
-
 
 def _alextimes_parser(response):
     
@@ -179,7 +180,6 @@ def _annistonstar_parser(response):
     return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
 
 def _anandtech_parser(response):
-    
 
     author_name = response.xpath("//div[@class='blog_top_left']/span/a[2]/text()").get()
     contact_info = response.xpath("//div[@class='blog_top_left']/span/a[2]/@href").get()
@@ -219,11 +219,15 @@ def _247wallst_parser(response):
     contact_info = response.xpath("//div[@class='author is-size-9 is-italic has-text-grey-darker has-text-weight-medium']/span/a/@href").get()
     return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
 
+# problem: need to login and subscribe 
+# solution: download the whole page (html)
 def _abqjournal_parser(response):
-    # need to subscribe
-    pass
+    author_name = response.xpath("//section[@class='entry-meta']//a/text()").get()
+    contact_info = response.xpath("//section[@class='entry-meta']//a/@href").get()
+    author_name = author_name.split('/')[0].strip()
+    return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
 
-##
+
 def _aikenstandard_parser(response):
 
     text = response.xpath("//header[@class='asset-header']//span[@class='tnt-byline']/text()").get()
@@ -238,6 +242,7 @@ def _aikenstandard_parser(response):
     return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
 
 
+# -4
 # 403 error
 def _agprofessional_parser(response):
     
@@ -286,10 +291,11 @@ def _americanmilitarynews_parser(response):
     contact_info = response.xpath("//a[@class='author url fn']/@href").get()
     return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
 
+# -1
 # redirect 301, no contact_info
 def _africabusinesschief_parser(response):
     
-    author_name = response.xpath("//div[@class='flex__SQ2u alignCenter__1AJm location__3QZp']//strong/text()").get()
+    author_name = response.xpath("//div[@class='flex__SQ2u alignCenter__1AJm location__3QZp']/strong/text()").get()
     contact_info = ''
     return ScrapygameItem(_id=response.meta.get('_id'), url=response.url, author_name=author_name, contact_info=contact_info)
 
@@ -331,7 +337,7 @@ parsers = {
   'www.abccolumbia.com': _abccolumbia_parser, 
   'www.altonivel.com.mx': _altonivel_parser, 
   'www.ainonline.com': _ainonline_parser, 
-  'www.americanbanker.com': None, 
+  'www.americanbanker.com': _americanbanker_parser, 
   'www.androidworld.it': _androidworld_parser, 
   'www.3dnatives.com': _3dnatives_parser, 
   'alextimes.com': _alextimes_parser, 
@@ -342,7 +348,7 @@ parsers = {
   'arstechnica.com': _arstechnica_parser, 
   'www.androidcentral.com': _androidcentral_parser, 
   '247wallst.com': _247wallst_parser, 
-  'www.abqjournal.com': None, 
+  'www.abqjournal.com': _abqjournal_parser, 
   'www.aikenstandard.com': _aikenstandard_parser, 
   'www.agprofessional.com': _agprofessional_parser, 
   '303magazine.com': _303magazine_parser, 

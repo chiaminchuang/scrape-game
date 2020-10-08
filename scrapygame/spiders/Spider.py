@@ -12,6 +12,8 @@ from ..parsers import parsers
 class Spider(CrawlSpider):
     name = 'media'
 
+    # handle_httpstatus_list = [301, 302]
+
     def __init__(self):
 
         # self.headers = {
@@ -45,7 +47,7 @@ class Spider(CrawlSpider):
             
             if parser is None:
                 continue
-            yield scrapy.Request(url, callback=parser, meta={'_id': _id})
+            yield scrapy.Request(url, callback=parser, meta={'_id': _id}, dont_filter=True)
 
     def get_parser(self, url):
 

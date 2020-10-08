@@ -14,10 +14,12 @@ NEWSPIDER_MODULE = 'scrapygame.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'scrapygame (+http://www.yourdomain.com)'
+# USER_AGENT = 'scrapygame (+http://www.yourdomain.com)'
+USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
+
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -31,7 +33,7 @@ ROBOTSTXT_OBEY = True
 #CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-#COOKIES_ENABLED = False
+COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
@@ -54,10 +56,10 @@ ROBOTSTXT_OBEY = True
 #    'scrapygame.middlewares.ScrapygameDownloaderMiddleware': 543,
 #}
 
-DOWNLOADER_MIDDLEWARES = {
-    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
-    'scrapy_user_agents.middlewares.RandomUserAgentMiddleware': 400,
-}
+# DOWNLOADER_MIDDLEWARES = {
+#     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
+#     'scrapy_user_agents.middlewares.RandomUserAgentMiddleware': 400,
+# }
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
@@ -94,3 +96,15 @@ ITEM_PIPELINES = {
 
 
 HTTPERROR_ALLOWED_CODES = [301]
+
+# CONCURRENT_REQUESTS = 1 
+# DOWNLOAD_DELAY = 5
+
+# PROXIES = [
+#     {'ip_port': '111.11.228.75:80', 'user_pass': ''},
+#     {'ip_port': '120.198.243.22:80', 'user_pass': ''},
+#     {'ip_port': '111.8.60.9:8123', 'user_pass': ''},
+#     {'ip_port': '101.71.27.120:80', 'user_pass': ''},
+#     {'ip_port': '122.96.59.104:80', 'user_pass': ''},
+#     {'ip_port': '122.224.249.122:8088', 'user_pass': ''},
+# ]
